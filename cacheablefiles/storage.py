@@ -1,4 +1,4 @@
-from django.contrib.staticfiles.storage import (
+from django.contrib.staticfiles.storage import (StaticFilesStorage,
         CachedFilesMixin as _CachedFilesMixin)
 from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
@@ -43,6 +43,14 @@ class CachedFilesMixin(_CachedFilesMixin):
                     self.exclude_file(k))
         return super(CachedFilesMixin, self).post_process(paths,
                 dry_run, **options)
+
+
+class CachedStaticFilesStorage(CachedFilesMixin, StaticFilesStorage):
+    """
+    A static file system storage backend which also saves
+    hashed copies of the files it saves.
+    """
+    pass
 
 
 # FIXME: extract a mixin
