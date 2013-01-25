@@ -13,7 +13,7 @@ from .utils import get_hashed_filename, split_filename
 class BuiltFileStorage(FileSystemStorage):
     def __init__(self, location=None, base_url=None, *args, **kwargs):
         if location is None:
-            location = settings.ECSTATIC_BUILT_ROOT
+            location = settings.ECSTATIC_BUILD_ROOT
         if base_url is None:
             base_url = settings.STATIC_URL
         super(BuiltFileStorage, self).__init__(location, base_url,
