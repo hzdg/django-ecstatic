@@ -6,3 +6,4 @@ class EcstaticConf(AppConf):
     COLLECT_BUILT = True
     BUILD_INCLUDES = ['*']
     BUILD_EXCLUDES = ['CVS', '.*', '*~']
+    MANIFEST = 'ecstatic.manifests.JsonManifest'
