@@ -18,6 +18,7 @@ class CachedFilesMixin(_CachedFilesMixin):
     save_without_hash = True
     save_with_hash = True
     postprocess_exclusions = []
+    strict = False
 
     def exclude_file(self, name):
         return any(fnmatch(name, pattern) for pattern in
@@ -31,7 +32,8 @@ class CachedFilesMixin(_CachedFilesMixin):
             try:
                 name = super(CachedFilesMixin, self).hashed_name(name, content)
             except ValueError:
-                pass
+                if self.strict:
+                    raise
         return name
 
     def post_process(self, paths, dry_run=False, **options):
@@ -60,10 +62,16 @@ class CachedStaticFilesMixin(CachedFilesMixin):
         if content is None:
             path = finders.find(name)
 
-            # Really, we should be using the associated storage object to open
-            # the file, but Django doesn't seem to expose that, so we just
-            # assume it's a file on the local filesystem.
-            content = File(open(path))
+            if path:
+                # Really, we should be using the associated storage object to open
+                # the file, but Django doesn't seem to expose that, so we just
+                # assume it's a file on the local filesystem.
+                content = File(open(path))
+            elif self.strict:
+                raise ValueError('No static file name "%s" exists.' % name)
+            else:
+                return name
+
         return super(CachedStaticFilesMixin, self).hashed_name(name, content)
 
 
