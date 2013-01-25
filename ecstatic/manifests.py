@@ -1,8 +1,14 @@
 from django.conf import settings
+from django.core.cache import get_cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import simplejson as json
 from django.utils.functional import LazyObject
 from django.utils.importlib import import_module
+import os
+
+
+class NotInManifest(Exception):
+    pass
 
 
 class JsonManifest(object):
@@ -33,6 +39,28 @@ class JsonManifest(object):
         file.close()
         self._data = {}
         self._cleared = False
+
+    def _get_cache_key(self, name, manifest_mtime):
+        return 'ecstatic:staticmanifest:%s:%s' % (manifest_mtime, name)
+
+    def get(self, key):
+        manifest_mtime = os.path.getmtime(settings.ECSTATIC_MANIFEST_FILE)
+        cache_key = self._get_cache_key(key, manifest_mtime)
+        cache = get_cache(settings.ECSTATIC_MANIFEST_CACHE)
+        value = cache.get(cache_key)
+        if value is None:
+            # Populate the cache with the entire contents of the manifest.
+            # The manifest should fit in the cache, so this will reduce the
+            # number of times we need to read the file.
+            file = open(settings.ECSTATIC_MANIFEST_FILE)
+            data = json.load(file)
+            for name, url in data.items():
+                cache.set(self._get_cache_key(name, manifest_mtime), url)
+                if name == key:
+                    value = url
+        if value is None:
+            raise NotInManifest()
+        return value
 
 
 class ConfiguredStaticFilesManifest(LazyObject):

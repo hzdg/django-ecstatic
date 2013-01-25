@@ -26,7 +26,12 @@ class Command(BaseCommand):
                     found_files[prefixed_path] = (storage, path)
 
         for storage, path in found_files.values():
-            hashed_name = staticfiles_storage.url(path)
+            try:
+                generate_url = staticfiles_storage.generate_url
+            except AttributeError:
+                raise AttributeError('%s doesn\'t define a generate_url method.'
+                        ' Did you remember to extend StaticManifestMixin?')
+            hashed_name = generate_url(path)
             manifest.add(path, hashed_name)
 
         manifest.flush()
