@@ -15,8 +15,6 @@ class CachedFilesMixin(_CachedFilesMixin):
     allows you to exclude files from postprocessing.
 
     """
-    save_without_hash = True
-    save_with_hash = True
     postprocess_exclusions = []
     strict = False
 
