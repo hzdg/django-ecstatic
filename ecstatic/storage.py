@@ -7,7 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
 import itertools
 import os
-from .manifests import static_files_manifest
+from .manifests import staticfiles_manifest
 from .utils import get_hashed_filename, split_filename
 
 
@@ -131,4 +131,4 @@ class StaticManifestMixin(object):
         if not settings.ECSTATIC_USE_MANIFEST and not force:
             return super(StaticManifestMixin, self).url(name, force)
 
-        return static_files_manifest.get(name)
+        return staticfiles_manifest.get(name)

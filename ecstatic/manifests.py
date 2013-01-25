@@ -84,4 +84,4 @@ def get_manifest_class(import_path=None):
         raise ImproperlyConfigured('Manifest module "%s" does not define a "%s" class.' % (module, classname))
 
 
-static_files_manifest = ConfiguredStaticFilesManifest()
+staticfiles_manifest = ConfiguredStaticFilesManifest()
