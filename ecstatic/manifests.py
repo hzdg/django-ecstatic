@@ -45,7 +45,7 @@ def get_manifest_class(import_path=None):
         dot = import_path.rindex('.')
     except ValueError:
         raise ImproperlyConfigured("%s isn't a manifest module." % import_path)
-    module, classname = import_path[:dot], import_path[dot+1:]
+    module, classname = import_path[:dot], import_path[dot + 1:]
     try:
         mod = import_module(module)
     except ImportError, e:
