@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
 import itertools
 import os
+from .manifests import staticfiles_manifest
 from .utils import get_hashed_filename, split_filename
 
 
@@ -120,3 +121,14 @@ class HashedNameFileSystemStorage(FileSystemStorage):
     def save(self, name, content):
         name = get_hashed_filename(name, content)
         return super(HashedNameFileSystemStorage, self).save(name, content)
+
+
+class StaticManifestMixin(object):
+    def generate_url(self, name):
+        return super(StaticManifestMixin, self).url(name, force=True)
+
+    def url(self, name, force=False):
+        if not settings.ECSTATIC_USE_MANIFEST and not force:
+            return super(StaticManifestMixin, self).url(name, force)
+
+        return staticfiles_manifest.get(name)
