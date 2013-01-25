@@ -15,7 +15,7 @@ class BuildableFileFinder(object):
     """
     def __init__(self, finder, include_patterns=None):
         self.wrapped = finder
-        self.include_patterns = include_patterns or settings.STATICBUILDER_INCLUDE_FILES
+        self.include_patterns = include_patterns or settings.ECSTATIC_BUILD_INCLUDES
 
     def list(self, ignore_patterns):
         """

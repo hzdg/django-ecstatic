@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
         self.verbosity = int(options.get('verbosity', '1'))
 
-        build_dir = settings.STATICBUILDER_BUILT_ROOT
+        build_dir = settings.ECSTATIC_BUILT_ROOT
 
         # Remove the old build directory and backup
         bkup_dir = '%s.bkup' % build_dir
@@ -57,7 +57,7 @@ class Command(BaseCommand):
         self.call_command_func(self.collect_for_build, build_dir)
 
         # Run the build commands.
-        build_commands = getattr(settings, 'STATICBUILDER_BUILD_COMMANDS', None) or []
+        build_commands = getattr(settings, 'ECSTATIC_BUILD_COMMANDS', None) or []
         for command in build_commands:
             cmd = command.format(build_dir=quote(build_dir))
             self.shell(cmd)
@@ -86,11 +86,11 @@ class Command(BaseCommand):
         with buildable_files_finders():
             with patched_settings(STATIC_ROOT=build_dir,
                                   STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage',
-                                  STATICBUILDER_COLLECT_BUILT=False):
+                                  ECSTATIC_COLLECT_BUILT=False):
                 call_command('collectstatic',
                               verbosity=self.verbosity - 1,
                               interactive=False,
-                              ignore_patterns=settings.STATICBUILDER_EXCLUDE_FILES)
+                              ignore_patterns=settings.ECSTATIC_BUILD_EXCLUDES)
 
     def log(self, msg, level=1):
         """

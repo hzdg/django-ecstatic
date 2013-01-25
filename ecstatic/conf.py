@@ -1,11 +1,11 @@
 from appconf import AppConf
 
 
-class StaticBuilderConf(AppConf):
+class EcstaticConf(AppConf):
     BUILD_COMMANDS = []
     COLLECT_BUILT = True
-    INCLUDE_FILES = ['*']
-    EXCLUDE_FILES = ['CVS', '.*', '*~']
+    BUILD_INCLUDES = ['*']
+    BUILD_EXCLUDES = ['CVS', '.*', '*~']
 
     class Meta:
         required = [

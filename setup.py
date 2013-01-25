@@ -5,25 +5,27 @@ from setuptools import setup, find_packages
 
 
 read = lambda filepath: codecs.open(filepath, 'r', 'utf-8').read()
-execfile(os.path.join(os.path.dirname(__file__), 'staticbuilder', 'version.py'))
+
+
+# Load package meta from the pkgmeta module without loading the package.
+pkgmeta = {}
+execfile(os.path.join(os.path.dirname(__file__), 'ecstatic', 'pkgmeta.py'),
+         pkgmeta)
 
 
 setup(
-    name='django-staticbuilder',
-    description='Optimize your static files.',
+    name='django-ecstatic',
+    version=pkgmeta['__version__'],
+    description='An expansion pack for django.contrib.staticfiles!',
     long_description=read(os.path.join(os.path.dirname(__file__), 'README.rst')),
-    version=__version__,
     author='Matthew Tretter',
     author_email='m@tthewwithanm.com',
-    url='http://github.com/hzdg/django-staticbuilder',
-    download_url='http://github.com/hzdg/django-staticbuilder/tarball/master',
+    url='http://github.com/hzdg/django-ecstatic',
+    download_url='http://github.com/hzdg/django-ecstatic/tarball/master',
     packages=find_packages(),
     zip_safe=False,
-    keywords=['javascript', 'css', 'compressor', 'requirejs'],
     include_package_data=True,
     tests_require=[
-        'nose',
-        'unittest2',
     ],
     install_requires=[
         'Django>=1.4',
@@ -31,6 +33,7 @@ setup(
         'django-appconf>=0.5',
     ],
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
@@ -41,5 +44,4 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Topic :: Utilities'
     ],
-    setup_requires=[],
 )
