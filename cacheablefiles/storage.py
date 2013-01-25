@@ -1,5 +1,7 @@
+from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import (StaticFilesStorage,
         CachedFilesMixin as _CachedFilesMixin)
+from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
 import itertools
@@ -43,6 +45,26 @@ class CachedFilesMixin(_CachedFilesMixin):
                     self.exclude_file(k))
         return super(CachedFilesMixin, self).post_process(paths,
                 dry_run, **options)
+
+
+class CachedStaticFilesMixin(CachedFilesMixin):
+    """
+    A mixin that uses the local version of the static file to compute the hash.
+    This removes at least one network connection when using a remote storage
+    (``CachedFilesMixin.hashed_name``'s checks for existence and opening of the
+    file) but adds the requirement that the static files be locally accessible
+    (which they should be already).
+
+    """
+    def hashed_name(self, name, content=None):
+        if content is None:
+            path = finders.find(name)
+
+            # Really, we should be using the associated storage object to open
+            # the file, but Django doesn't seem to expose that, so we just
+            # assume it's a file on the local filesystem.
+            content = File(open(path))
+        return super(CachedStaticFilesMixin, self).hashed_name(name, content)
 
 
 class CachedStaticFilesStorage(CachedFilesMixin, StaticFilesStorage):
