@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Settings &mdash; django-ecstatic 1.0a1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0a1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="django-ecstatic 1.0a1 documentation" href="index.html" />
+    <link rel="next" title="Storages" href="storages.html" />
+    <link rel="prev" title="Django Ecstatic!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="storages.html" title="Storages"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Django Ecstatic!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">django-ecstatic 1.0a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="storage-settings">
+<h2>Storage Settings<a class="headerlink" href="#storage-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="django.conf.settings.STRICT">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">STRICT</tt><a class="headerlink" href="#django.conf.settings.STRICT" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">False</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>Specifies whether Ecstatic should raise an exception when it can&#8217;t convert
+a URL. If <tt class="docutils literal"><span class="pre">False</span></tt>, the unconverted URL will be used. This situation
+typically arises when a CSS file points to a non-existent image.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="build-settings">
+<h2>Build Settings<a class="headerlink" href="#build-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="django.conf.settings.BUILD_COMMANDS">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">BUILD_COMMANDS</tt><a class="headerlink" href="#django.conf.settings.BUILD_COMMANDS" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">[]</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>A list of shell commands to be run by the <tt class="docutils literal"><span class="pre">buildstatic</span></tt> command.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.BUILD_ROOT">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">BUILD_ROOT</tt><a class="headerlink" href="#django.conf.settings.BUILD_ROOT" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>The path of the directory in which static files should be collected for
+building. You must provide a value if using <tt class="docutils literal"><span class="pre">buildstatic</span></tt> (or
+<tt class="docutils literal"><span class="pre">ecstatic.storage.BuiltFileStorage</span></tt>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.BUILD_INCLUDES">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">BUILD_INCLUDES</tt><a class="headerlink" href="#django.conf.settings.BUILD_INCLUDES" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">['*']</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>A list of patterns corresponding to files that should be collected for
+building.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.BUILD_EXCLUDES">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">BUILD_EXCLUDES</tt><a class="headerlink" href="#django.conf.settings.BUILD_EXCLUDES" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">['CVS',</span> <span class="pre">'.*',</span> <span class="pre">'*~']</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>A list of patterns corresponding to files that should be skipped when
+collecting for building.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="manifest-settings">
+<h2>Manifest Settings<a class="headerlink" href="#manifest-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="django.conf.settings.MANIFEST">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">MANIFEST</tt><a class="headerlink" href="#django.conf.settings.MANIFEST" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">'ecstatic.manifests.JsonManifest'</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>The dotted path to the manifest class to be used by the
+<tt class="docutils literal"><span class="pre">createstaticmanifest</span></tt> management command and
+<tt class="docutils literal"><span class="pre">ecstatic.storage.StaticManifestMixin</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.MANIFEST_FILE">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">MANIFEST_FILE</tt><a class="headerlink" href="#django.conf.settings.MANIFEST_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>The path where the manifest file should be saved. This setting must be set
+if using staticfiles manifests.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.USE_MANIFEST">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">USE_MANIFEST</tt><a class="headerlink" href="#django.conf.settings.USE_MANIFEST" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body">the opposite of <tt class="docutils literal"><span class="pre">DEBUG</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>Specifies whether the manifest should be used by the
+(<tt class="docutils literal"><span class="pre">ecstatic.storage.StaticManifestMixin</span></tt> extending) storage class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.conf.settings.MANIFEST_CACHE">
+<tt class="descclassname">django.conf.settings.</tt><tt class="descname">MANIFEST_CACHE</tt><a class="headerlink" href="#django.conf.settings.MANIFEST_CACHE" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default :</th><td class="field-body"><tt class="docutils literal"><span class="pre">'ecstatic_manifest'</span></tt>, if the <tt class="docutils literal"><span class="pre">CACHES</span></tt> dictionary contains it,</td>
+</tr>
+</tbody>
+</table>
+<p>otherwise &#8216;default&#8217;</p>
+<p>The name of the cache that should be used by the manifest class.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Settings</a><ul>
+<li><a class="reference internal" href="#storage-settings">Storage Settings</a></li>
+<li><a class="reference internal" href="#build-settings">Build Settings</a></li>
+<li><a class="reference internal" href="#manifest-settings">Manifest Settings</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Django Ecstatic!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="storages.html"
+                        title="next chapter">Storages</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/settings.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="storages.html" title="Storages"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Django Ecstatic!"
+             >previous</a> |</li>
+        <li><a href="index.html">django-ecstatic 1.0a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Matthew Tretter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

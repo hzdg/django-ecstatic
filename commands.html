@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Management Commands &mdash; django-ecstatic 1.0a1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0a1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="django-ecstatic 1.0a1 documentation" href="index.html" />
+    <link rel="prev" title="Storages" href="storages.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="storages.html" title="Storages"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">django-ecstatic 1.0a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="management-commands">
+<h1>Management Commands<a class="headerlink" href="#management-commands" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="buildstatic">
+<h2>buildstatic<a class="headerlink" href="#buildstatic" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ecstatic.management.commands.buildstatic.Command">
+<em class="property">class </em><tt class="descclassname">ecstatic.management.commands.buildstatic.</tt><tt class="descname">Command</tt><a class="headerlink" href="#ecstatic.management.commands.buildstatic.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects all static files into <tt class="docutils literal"><span class="pre">ECSTATIC_BUILD_ROOT</span></tt>, and then executes
+the shell commands in <tt class="docutils literal"><span class="pre">ECSTATIC_BUILD_COMMANDS</span></tt>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="collectnewstatic">
+<h2>collectnewstatic<a class="headerlink" href="#collectnewstatic" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ecstatic.management.commands.collectnewstatic.Command">
+<em class="property">class </em><tt class="descclassname">ecstatic.management.commands.collectnewstatic.</tt><tt class="descname">Command</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#ecstatic.management.commands.collectnewstatic.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>A version of Django&#8217;s <tt class="docutils literal"><span class="pre">collectstatic</span></tt> that only collects files that have
+changed. This can be useful for collecting files to a CDN, for example.</p>
+<p>Two comparison methods are supported: &#8220;modified_time&#8221; (the default) and
+&#8220;file_hash&#8221;. Which is used can be specified with the &#8220;&#8211;compare&#8221; flag. For
+example:</p>
+<div class="highlight-python"><pre>./manage.py collectnewstatic --compare file_hash</pre>
+</div>
+<p>The command will attempt to call the method with the name of the comparison
+type on the source and destination storage objects and compare the results.
+In the case of &#8220;file_hash&#8221;, if a &#8220;file_hash&#8221; method is not present on the
+storage object, the file will be opened and the hash calculated. Therefore,
+you may be able to speed up the collection process by implementing these
+methods on your storage class.</p>
+<p>The <tt class="docutils literal"><span class="pre">modified_time()</span></tt> method must return a local datetime; <tt class="docutils literal"><span class="pre">file_hash()</span></tt>
+must return an md5 hexdigest.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="createstaticmanifest">
+<h2>createstaticmanifest<a class="headerlink" href="#createstaticmanifest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ecstatic.management.commands.createstaticmanifest.Command">
+<em class="property">class </em><tt class="descclassname">ecstatic.management.commands.createstaticmanifest.</tt><tt class="descname">Command</tt><a class="headerlink" href="#ecstatic.management.commands.createstaticmanifest.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a staticfiles manifest. The exact format of the manifest is defined
+by <tt class="docutils literal"><span class="pre">ECSTATIC_MANIFEST</span></tt>. By default, it&#8217;s a JSON file.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="hashmedianames">
+<h2>hashmedianames<a class="headerlink" href="#hashmedianames" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ecstatic.management.commands.hashmedianames.Command">
+<em class="property">class </em><tt class="descclassname">ecstatic.management.commands.hashmedianames.</tt><tt class="descname">Command</tt><a class="headerlink" href="#ecstatic.management.commands.hashmedianames.Command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Management Commands</a><ul>
+<li><a class="reference internal" href="#buildstatic">buildstatic</a></li>
+<li><a class="reference internal" href="#collectnewstatic">collectnewstatic</a></li>
+<li><a class="reference internal" href="#createstaticmanifest">createstaticmanifest</a></li>
+<li><a class="reference internal" href="#hashmedianames">hashmedianames</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="storages.html"
+                        title="previous chapter">Storages</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/commands.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="storages.html" title="Storages"
+             >previous</a> |</li>
+        <li><a href="index.html">django-ecstatic 1.0a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Matthew Tretter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
