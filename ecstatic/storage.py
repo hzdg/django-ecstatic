@@ -40,7 +40,7 @@ class CachedFilesMixin(_CachedFilesMixin):
 
     """
     postprocess_exclusions = []
-    strict = False
+    strict = settings.ECSTATIC_STRICT
 
     def exclude_file(self, name):
         return any(fnmatch(name, pattern) for pattern in

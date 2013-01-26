@@ -10,3 +10,4 @@ class EcstaticConf(AppConf):
     MANIFEST = 'ecstatic.manifests.JsonManifest'
     USE_MANIFEST = not settings.DEBUG
     MANIFEST_CACHE = 'ecstatic_manifest' if 'ecstatic_manifest' in settings.CACHES else 'default'
+    STRICT = False
