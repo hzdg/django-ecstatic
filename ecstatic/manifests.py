@@ -59,7 +59,8 @@ class JsonManifest(object):
                 if name == key:
                     value = url
         if value is None:
-            raise NotInManifest()
+            raise NotInManifest('The file "%s" was not found in the'
+                                ' manifest.' % key)
         return value
 
 
