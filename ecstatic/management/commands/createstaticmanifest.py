@@ -7,6 +7,12 @@ from ...manifests import ConfiguredStaticFilesManifest
 
 
 class Command(BaseCommand):
+    """
+    Creates a staticfiles manifest. The exact format of the manifest is defined
+    by ``ECSTATIC_MANIFEST``. By default, it's a JSON file.
+
+    """
+
     help = 'Creates a file that maps static file names to their URLs.'
 
     def handle(self, *args, **options):

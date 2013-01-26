@@ -31,6 +31,12 @@ def buildable_files_finders():
 
 
 class Command(BaseCommand):
+    """
+    Collects all static files into ``ECSTATIC_BUILD_ROOT``, and then executes
+    the shell commands in ``ECSTATIC_BUILD_COMMANDS``.
+
+    """
+
     help = 'Build optimized versions of your static assets.'
 
     def handle(self, *args, **options):

@@ -4,6 +4,27 @@ from optparse import make_option
 
 
 class Command(CollectStatic):
+    """
+    A version of Django's ``collectstatic`` that only collects files that have
+    changed. This can be useful for collecting files to a CDN, for example.
+
+    Two comparison methods are supported: "modified_time" (the default) and
+    "file_hash". Which is used can be specified with the "--compare" flag. For
+    example::
+
+        ./manage.py collectnewstatic --compare file_hash
+
+    The command will attempt to call the method with the name of the comparison
+    type on the source and destination storage objects and compare the results.
+    In the case of "file_hash", if a "file_hash" method is not present on the
+    storage object, the file will be opened and the hash calculated. Therefore,
+    you may be able to speed up the collection process by implementing these
+    methods on your storage class.
+
+    The ``modified_time()`` method must return a local datetime; ``file_hash()``
+    must return an md5 hexdigest.
+
+    """
 
     option_list = CollectStatic.option_list + (
         make_option('--compare', default='modified_time',
