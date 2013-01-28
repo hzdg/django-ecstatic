@@ -85,3 +85,14 @@ Manifest Settings
     otherwise 'default'
 
     The name of the cache that should be used by the manifest class.
+
+.. attribute:: ECSTATIC_MANIFEST_EXTRAS
+
+    :default: ``['admin/']``
+
+    A list of paths that will not be found by Django's ``STATICFILES_FINDERS``
+    but that should nonetheless be included in the manifest. This setting exists
+    chiefly to support the Django admin, which uses the static template tag with
+    the path ``'admin/'`` in order to get a static prefix for the admin. (Note
+    that Django's behavior here may be incompatible with storages that alter the
+    filepath in a way other than adding a prefix.)

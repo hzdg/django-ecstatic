@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.management.base import BaseCommand
@@ -31,7 +32,7 @@ class Command(BaseCommand):
                 if prefixed_path not in found_files:
                     found_files[prefixed_path] = path
 
-        for path in found_files.values():
+        for path in found_files.values() + settings.ECSTATIC_MANIFEST_EXTRAS:
             try:
                 generate_url = staticfiles_storage.generate_url
             except AttributeError:
