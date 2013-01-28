@@ -7,7 +7,7 @@ Settings
 Storage Settings
 ----------------
 
-.. attribute:: STRICT
+.. attribute:: ECSTATIC_STRICT
 
     :default: ``False``
 
@@ -19,14 +19,14 @@ Storage Settings
 Build Settings
 --------------
 
-.. attribute:: BUILD_COMMANDS
+.. attribute:: ECSTATIC_BUILD_COMMANDS
 
     :default: ``[]``
 
     A list of shell commands to be run by the ``buildstatic`` command.
 
 
-.. attribute:: BUILD_ROOT
+.. attribute:: ECSTATIC_BUILD_ROOT
 
     :default: ``None``
 
@@ -35,7 +35,7 @@ Build Settings
     ``ecstatic.storage.BuiltFileStorage``)
 
 
-.. attribute:: BUILD_INCLUDES
+.. attribute:: ECSTATIC_BUILD_INCLUDES
 
     :default: ``['*']``
 
@@ -43,7 +43,7 @@ Build Settings
     building.
 
 
-.. attribute:: BUILD_EXCLUDES
+.. attribute:: ECSTATIC_BUILD_EXCLUDES
 
     :default: ``['CVS', '.*', '*~']``
 
@@ -54,7 +54,7 @@ Build Settings
 Manifest Settings
 -----------------
 
-.. attribute:: MANIFEST
+.. attribute:: ECSTATIC_MANIFEST
 
     :default: ``'ecstatic.manifests.JsonManifest'``
 
@@ -63,7 +63,7 @@ Manifest Settings
     ``ecstatic.storage.StaticManifestMixin``.
 
 
-.. attribute:: MANIFEST_FILE
+.. attribute:: ECSTATIC_MANIFEST_FILE
 
     :default: ``None``
 
@@ -71,7 +71,7 @@ Manifest Settings
     if using staticfiles manifests.
 
 
-.. attribute:: USE_MANIFEST
+.. attribute:: ECSTATIC_USE_MANIFEST
 
     :default: the opposite of ``DEBUG``
 
@@ -79,9 +79,20 @@ Manifest Settings
     (``ecstatic.storage.StaticManifestMixin`` extending) storage class.
 
 
-.. attribute:: MANIFEST_CACHE
+.. attribute:: ECSTATIC_MANIFEST_CACHE
 
     :default: ``'ecstatic_manifest'``, if the ``CACHES`` dictionary contains it,
     otherwise 'default'
 
     The name of the cache that should be used by the manifest class.
+
+.. attribute:: ECSTATIC_MANIFEST_EXTRAS
+
+    :default: ``['admin/']``
+
+    A list of paths that will not be found by Django's ``STATICFILES_FINDERS``
+    but that should nonetheless be included in the manifest. This setting exists
+    chiefly to support the Django admin, which uses the static template tag with
+    the path ``'admin/'`` in order to get a static prefix for the admin. (Note
+    that Django's behavior here may be incompatible with storages that alter the
+    filepath in a way other than adding a prefix.)
