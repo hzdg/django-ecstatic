@@ -29,9 +29,9 @@ class Command(BaseCommand):
                     prefixed_path = path
 
                 if prefixed_path not in found_files:
-                    found_files[prefixed_path] = (storage, path)
+                    found_files[prefixed_path] = path
 
-        for storage, path in found_files.values():
+        for path in found_files.values():
             try:
                 generate_url = staticfiles_storage.generate_url
             except AttributeError:
