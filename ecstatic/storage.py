@@ -178,6 +178,10 @@ class HashedNameFileSystemStorage(FileSystemStorage):
 
 
 class StaticManifestMixin(object):
+    """
+    A mixin that uses a manifest file to get URLs.
+
+    """
     def generate_url(self, name):
         return super(StaticManifestMixin, self).url(name, force=True)
 
