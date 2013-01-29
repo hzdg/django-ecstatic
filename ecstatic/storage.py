@@ -123,7 +123,7 @@ class CachedFilesMixin(LaxPostProcessorMixin, _CachedFilesMixin):
                 dry_run, **options)
 
 
-class CachedStaticFilesMixin(CachedFilesMixin):
+class UncollectedFileHashMixin(object):
     """
     A mixin that uses the local version of the static file to compute the hash.
     This removes at least one network connection when using a remote storage
@@ -144,7 +144,11 @@ class CachedStaticFilesMixin(CachedFilesMixin):
             else:
                 raise ValueError('No static file name "%s" exists.' % name)
 
-        return super(CachedStaticFilesMixin, self).hashed_name(name, content)
+        return super(UncollectedFileHashMixin, self).hashed_name(name, content)
+
+
+class CachedStaticFilesMixin(UncollectedFileHashMixin, CachedFilesMixin):
+    pass
 
 
 class CachedStaticFilesStorage(CachedFilesMixin, StaticFilesStorage):
