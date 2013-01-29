@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import (StaticFilesStorage,
@@ -8,8 +9,64 @@ from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
 import itertools
 import os
+import types
 from .manifests import staticfiles_manifest
 from .utils import get_hashed_filename, split_filename
+
+
+@contextmanager
+def patched_name_fn(storage, fn_name, desc):
+    original_fn = getattr(storage, fn_name)
+
+    def patched(self, name, *args, **kwargs):
+        try:
+            return original_fn(name, *args, **kwargs)
+        except Exception, exc:
+            if self.strict:
+                raise
+
+            # TODO: Real warning?
+            print ('WARNING: Could not get %s for "%s". Using "%s" instead.'
+                   ' To change this behavior, set your storage\'s `strict`'
+                   ' attribute to `False`. Error was: %s'
+                   % (desc, name, name, exc))
+            # Increment error count.
+            setattr(self, '_post_process_error_count',
+                    getattr(self, '_post_process_error_count', 0))
+            self._post_process_error_count += 1
+            return name
+
+    method = types.MethodType(patched, storage)
+    setattr(storage, fn_name, method)
+
+    yield
+
+    setattr(storage, fn_name, original_fn)
+
+
+@contextmanager
+def post_process_error_counter(storage):
+    storage._post_process_error_count = 0
+    yield
+    storage._post_process_error_count = 0
+
+
+class LaxPostProcessorMixin(object):
+    strict = settings.ECSTATIC_STRICT
+
+    def post_process(self, paths, dry_run=False, **options):
+        """
+        Overridden to work around https://code.djangoproject.com/ticket/19111
+        """
+        with post_process_error_counter(self):
+            with patched_name_fn(self, 'hashed_name', 'hashed name'):
+                with patched_name_fn(self, 'url', 'url'):
+                    for result in super(LaxPostProcessorMixin,
+                                        self).post_process(paths, dry_run, **options):
+                        yield result
+            error_count = self._post_process_error_count
+            print '\n%s post-processing error%s.' % (error_count,
+                    '' if error_count == 1 else 's')
 
 
 class BuiltFileStorage(FileSystemStorage):
@@ -36,29 +93,21 @@ class BuiltFileStorage(FileSystemStorage):
             return [], []
 
 
-class CachedFilesMixin(_CachedFilesMixin):
+class CachedFilesMixin(LaxPostProcessorMixin, _CachedFilesMixin):
     """
     A subclass of ``django.contrib.staticfiles.storage.CachedFilesMixin`` that
     allows you to exclude files from postprocessing.
 
     """
     postprocess_exclusions = []
-    strict = settings.ECSTATIC_STRICT
 
     def exclude_file(self, name):
         return any(fnmatch(name, pattern) for pattern in
                 self.postprocess_exclusions)
 
     def hashed_name(self, name, content=None):
-        """
-        Overridden to work around https://code.djangoproject.com/ticket/19111
-        """
         if not self.exclude_file(name):
-            try:
-                name = super(CachedFilesMixin, self).hashed_name(name, content)
-            except ValueError:
-                if self.strict:
-                    raise
+            name = super(CachedFilesMixin, self).hashed_name(name, content)
         return name
 
     def post_process(self, paths, dry_run=False, **options):
@@ -92,10 +141,8 @@ class CachedStaticFilesMixin(CachedFilesMixin):
                 # the file, but Django doesn't seem to expose that, so we just
                 # assume it's a file on the local filesystem.
                 content = File(open(path))
-            elif self.strict:
-                raise ValueError('No static file name "%s" exists.' % name)
             else:
-                return name
+                raise ValueError('No static file name "%s" exists.' % name)
 
         return super(CachedStaticFilesMixin, self).hashed_name(name, content)
 
