@@ -8,7 +8,6 @@ Here are some things it can do:
 
 - Eliminate the need for network connections to calculate file hashes.
 - Collect only the static files that have changed.
-- Add a static building step to your Django workflow.
 - Add content hashes to your filenames, without failing on non-existent files.
 - Create static manifests to reduce network operations and ease deployment.
 
@@ -57,74 +56,6 @@ benefits:
         pass
 
 
-Building Static Files
----------------------
-
-Sooner or later, you're going to need to add a build step to your Django apps;
-whether it's because of Sass_, Less_, Coffee_, AMD_, or just to optimize your
-PNGs and JPEGs. There are a few__ popular__ ways to do some of these things with
-Django, but each has its own specific goals, and you can easily find your build
-requirements outside of their scope. Ecstatic takes a different approach by
-giving you a simple way to add a build step to your workflow, but has absolutely
-no opinion about what that build step should be, making it easy to take
-advantage of whatever build tools you want.
-
-The heart of the Ecstatic build step is the ``buildstatic`` management command,
-and it is stupid simple. In fact, it only does two things: first, it collects
-your static files into a build directory and, second, it runs some shell
-commands. (Seriously, look at `the source`__. It delegates most of its work to
-Django's ``collectstatic``. And that's A Good Thing.)
-
-To specify the build directory, use the ``ECSTATIC_BUILD_ROOT`` setting:
-
-.. code-block:: python
-
-    ECSTATIC_BUILD_ROOT = os.path.join(os.path.dirname(__file__), 'static_built')
-
-To specify a list of shell commands to run with the ``ECSTATIC_BUILD_COMMANDS``
-setting:
-
-.. code-block:: python
-
-    ECSTATIC_BUILD_COMMANDS = [
-        'coffee -c /path/to/build_dir',
-        'uglifyjs /path/to/build_dir/a.js -c > /path/to/build_dir/a.js',
-    ]
-
-or (to keep things a little more tidy):
-
-.. code-block:: python
-
-    ECSTATIC_BUILD_COMMANDS = ['./bin/mybuildscript']
-
-Finally, you'll need to add a special finder to your ``STATICFILES_FINDERS``
-list:
-
-.. code-block:: python
-
-    STATICFILES_FINDERS = (
-        'ecstatic.finders.BuiltFileFinder',
-
-        # The default Django finders:
-        'django.contrib.staticfiles.finders.FileSystemFinder',
-        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    )
-
-This finder is important—it's how Django finds the built versions of your files
-when you run ``collectstatic``.
-
-
-.. _Sass: http://sass-lang.com/
-.. _Less: http://lesscss.org/
-.. _Coffee: http://coffeescript.org/
-.. _AMD: http://requirejs.org/docs/whyamd.html
-__ https://github.com/jezdez/django_compressor
-__ https://github.com/cyberdelia/django-pipeline
-__ https://github.com/hzdg/django-ecstatic/blob/master/ecstatic/management/commands/buildstatic.py
-
-
-
-
 Hashed Filenames and Built Files
 --------------------------------
 
@@ -133,12 +64,12 @@ Remember when I mentioned how ``ecstatic.storage.CachedStaticFilesMixin`` and
 of the local versions of the static files. Obviously, then, the local
 versions—that is, the static files on your app server—need to be the same as the
 ones you collected to your CDN. Otherwise, the app server would get different
-hashes and use the wrong URL! So if you're building your static files, you need
+hashes and use the wrong URL! So if your project requires a build step, you need
 to make sure that the built files are on your app server. There are two ways
 to do this:
 
-1. Include your ``STATIC_BUILD`` directory in your package and deploy it with
-   the rest of your application code.
+1. Include your built files in your package and deploy them with the rest of
+   your application code.
 2. Re-build the static files on the app server.
 
 Alternatively, you can go back to using
@@ -170,9 +101,9 @@ of the local files.
 
 .. note::
 
-    Notice that we're still including ``CachedStaticFilesMixin``. It's still
-    needed for the post-processing, and to figure out which URL should be
-    inserted into the manifest.
+    Notice that we're still including ``CachedStaticFilesMixin``. It (or
+    Django's version) is still needed for the post-processing, and to figure out
+    which URL should be inserted into the manifest.
 
 With this mixin, the storage no longer needs access to the built files to
 determine their hashes (and therefore URLs); it only needs to access the

@@ -16,41 +16,6 @@ Storage Settings
     typically arises when a CSS file points to a non-existent image.
 
 
-Build Settings
---------------
-
-.. attribute:: ECSTATIC_BUILD_COMMANDS
-
-    :default: ``[]``
-
-    A list of shell commands to be run by the ``buildstatic`` command.
-
-
-.. attribute:: ECSTATIC_BUILD_ROOT
-
-    :default: ``None``
-
-    The path of the directory in which static files should be collected for
-    building. You must provide a value if using ``buildstatic`` (or
-    ``ecstatic.storage.BuiltFileStorage``)
-
-
-.. attribute:: ECSTATIC_BUILD_INCLUDES
-
-    :default: ``['*']``
-
-    A list of patterns corresponding to files that should be collected for
-    building.
-
-
-.. attribute:: ECSTATIC_BUILD_EXCLUDES
-
-    :default: ``['CVS', '.*', '*~']``
-
-    A list of patterns corresponding to files that should be skipped when
-    collecting for building.
-
-
 Manifest Settings
 -----------------
 

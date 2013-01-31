@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import (StaticFilesStorage,
         CachedFilesMixin as _CachedFilesMixin)
-from django.core.exceptions import ImproperlyConfigured
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from fnmatch import fnmatch
@@ -67,30 +66,6 @@ class LaxPostProcessorMixin(object):
             error_count = self._post_process_error_count
             print '\n%s post-processing error%s.' % (error_count,
                     '' if error_count == 1 else 's')
-
-
-class BuiltFileStorage(FileSystemStorage):
-    def __init__(self, location=None, base_url=None, *args, **kwargs):
-        if location is None:
-            location = settings.ECSTATIC_BUILD_ROOT
-            if not location:
-                raise ImproperlyConfigured('ECSTATIC_BUILD_ROOT must be set.')
-        if base_url is None:
-            base_url = settings.STATIC_URL
-        super(BuiltFileStorage, self).__init__(location, base_url,
-                                               *args, **kwargs)
-
-    def find(self, path, all=False):
-        if settings.ECSTATIC_COLLECT_BUILT:
-            return super(BuiltFileStorage, self).find(path, all)
-        else:
-            return []
-
-    def listdir(self, path):
-        if settings.ECSTATIC_COLLECT_BUILT:
-            return super(BuiltFileStorage, self).listdir(path)
-        else:
-            return [], []
 
 
 class CachedFilesMixin(LaxPostProcessorMixin, _CachedFilesMixin):

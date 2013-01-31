@@ -2,12 +2,6 @@ Management Commands
 ===================
 
 
-buildstatic
------------
-
-.. autoclass:: ecstatic.management.commands.buildstatic.Command
-
-
 collectnewstatic
 ----------------
 
