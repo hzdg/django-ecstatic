@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import re, sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -53,7 +53,7 @@ execfile(os.path.join(os.path.dirname(__file__), '..', '..', 'ecstatic',
 # built documents.
 #
 # The short X.Y version.
-version = pkgmeta['__version__']
+version = re.match('\d+\.\d+', pkgmeta['__version__']).group()
 # The full version, including alpha/beta/rc tags.
 release = pkgmeta['__version__']
 
