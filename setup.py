@@ -14,11 +14,11 @@ execfile(os.path.join(os.path.dirname(__file__), 'ecstatic', 'pkgmeta.py'),
 
 
 setup(
-    name='django-ecstatic',
+    name=pkgmeta['__title__'],
     version=pkgmeta['__version__'],
     description='An expansion pack for django.contrib.staticfiles!',
     long_description=read(os.path.join(os.path.dirname(__file__), 'README.rst')),
-    author='Matthew Tretter',
+    author=pkgmeta['__author__'],
     author_email='m@tthewwithanm.com',
     url='http://github.com/hzdg/django-ecstatic',
     download_url='http://github.com/hzdg/django-ecstatic/tarball/master',
