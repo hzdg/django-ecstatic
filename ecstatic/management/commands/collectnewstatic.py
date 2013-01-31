@@ -1,10 +1,10 @@
 from django.contrib.staticfiles.management.commands.collectstatic import Command as CollectStatic
-from django.core.files.storage import get_storage_class
 from hashlib import md5
 from optparse import make_option
+from ..utils import StaticStorageMixin
 
 
-class Command(CollectStatic):
+class Command(StaticStorageMixin, CollectStatic):
     """
     A version of Django's ``collectstatic`` that only collects files that have
     changed. This can be useful for collecting files to a CDN, for example.
@@ -36,22 +36,7 @@ class Command(CollectStatic):
                 ' not define a file_hash method, so you should define a'
                 ' file_hash method for remote storage backends (or avoid the'
                 ' file_hash comparison method).'),
-        make_option('-s', '--storage', action='store',
-            dest='storage_override', type="string",
-            help='override default storage backend'),
     )
-
-    def handle_noargs(self, **options):
-        storage_override = options.get('storage_override')
-        if storage_override:
-            self.storage = get_storage_class(storage_override)()
-            try:
-                self.storage.path('')
-            except NotImplementedError:
-                self.local = False
-            else:
-                self.local = True
-        super(Command, self).handle_noargs(**options)
 
     def link_file(self, path, prefixed_path, source_storage):
         self._if_modified(path, prefixed_path, source_storage,
@@ -78,7 +63,6 @@ class Command(CollectStatic):
     def set_options(self, **options):
         super(Command, self).set_options(**options)
         self.comparison_method = options.get('comparison_method')
-        self.storage_override = options.get('storage_override')
 
     def compare_modified_time(self, path, prefixed_path, source_storage):
         old_mtime = self.storage.modified_time(path)
