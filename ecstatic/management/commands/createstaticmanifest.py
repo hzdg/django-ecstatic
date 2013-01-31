@@ -51,7 +51,8 @@ class Command(BaseCommand):
                 generate_url = storage.generate_url
             except AttributeError:
                 raise AttributeError('%s doesn\'t define a generate_url method.'
-                        ' Did you remember to extend StaticManifestMixin?')
+                        ' Did you remember to extend StaticManifestMixin?' %
+                        storage)
             hashed_name = generate_url(path)
             manifest.add(path, hashed_name)
 
