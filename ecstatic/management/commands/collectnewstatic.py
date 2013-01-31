@@ -52,7 +52,6 @@ class Command(CollectStatic):
             else:
                 self.local = True
         super(Command, self).handle_noargs(**options)
-        print self.storage
 
     def link_file(self, path, prefixed_path, source_storage):
         self._if_modified(path, prefixed_path, source_storage,
