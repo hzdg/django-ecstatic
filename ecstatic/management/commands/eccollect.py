@@ -6,7 +6,7 @@ from optparse import make_option
 class CollectNewMixin(object):
     def __init__(self, *args, **kwargs):
         self.option_list = list(self.option_list) + [
-            make_option('--compare',
+            make_option('--compare', default='modified_time',
                 dest='comparison_method',
                 help='The comparison method to use in order to determine which file'
                     ' is newer. Options are modified_time and file_hash. Note that,'
@@ -19,39 +19,48 @@ class CollectNewMixin(object):
         ]
         super(CollectNewMixin, self).__init__(*args, **kwargs)
 
-    def link_file(self, path, prefixed_path, source_storage):
-        self._if_modified(path, prefixed_path, source_storage,
-                          super(CollectNewMixin, self).link_file)
+    def set_options(self, **options):
+        super(CollectNewMixin, self).set_options(**options)
+        self.comparison_method = options.get('comparison_method')
 
-    def copy_file(self, path, prefixed_path, source_storage):
-        self._if_modified(path, prefixed_path, source_storage,
-                          super(CollectNewMixin, self).copy_file)
-
-    def _if_modified(self, path, prefixed_path, source_storage, handler):
-        if self.comparison_method and self.storage.exists(path):
-            if not self.compare(path, prefixed_path, source_storage):
-                self.log(u'Skipping %s' % path)
-                return
-        handler(path, prefixed_path, source_storage)
+    def delete_file(self, path, prefixed_path, source_storage):
+        if self.comparison_method == 'modified_time':
+            return CollectStatic.delete_file(self, path, prefixed_path, source_storage)
+        elif self.storage.exists(prefixed_path):
+            should_delete = self.compare(path, prefixed_path, source_storage)
+            if should_delete:
+                if self.dry_run:
+                    self.log(u"Pretending to delete '%s'" % path)
+                else:
+                    self.log(u"Deleting '%s'" % path)
+                    self.storage.delete(prefixed_path)
+            else:
+                self.log(u"Skipping '%s' (not modified)" % path)
+                return False
+        return True
 
     def compare(self, path, prefixed_path, source_storage):
         """
         Returns True if the file should be copied.
         """
-        comparitor = getattr(self, 'compare_%s' % self.comparison_method)
+        # First try a method on the command named compare_<comparison_method>
+        # If that doesn't exist, create a comparitor that calls methods on the
+        # storage with the name <comparison_method>, passing them the name.
+        comparitor = getattr(self, 'compare_%s' % self.comparison_method, None)
+        if not comparitor:
+            comparitor = self._create_comparitor(self.comparison_method)
         return comparitor(path, prefixed_path, source_storage)
 
-    def set_options(self, **options):
-        super(CollectNewMixin, self).set_options(**options)
-        self.comparison_method = options.get('comparison_method')
-
-    def compare_modified_time(self, path, prefixed_path, source_storage):
-        old_mtime = self.storage.modified_time(path)
-        if old_mtime:
-            new_mtime = source_storage.modified_time(prefixed_path)
-            if new_mtime < old_mtime:
-                return False
-        return True
+    def _create_comparitor(self, comparison_method):
+        def comparitor(path, prefixed_path, source_storage):
+            # If both storage objects don't implement a method with a name that
+            # matches the comparison method, this will raise an exception.
+            source_fn = getattr(source_storage, comparison_method)
+            dest_fn = getattr(self.storage, comparison_method)
+            source_value = source_fn(path)
+            dest_value = dest_fn(path)
+            return source_value == dest_value
+        return comparitor
 
     def compare_file_hash(self, path, prefixed_path, source_storage):
         old_md5 = self._get_md5(self.storage, path)
