@@ -3,50 +3,32 @@ from hashlib import md5
 from optparse import make_option
 
 
-class Command(CollectStatic):
-    """
-    A version of Django's ``collectstatic`` that only collects files that have
-    changed. This can be useful for collecting files to a CDN, for example.
-
-    Two comparison methods are supported: "modified_time" (the default) and
-    "file_hash". Which is used can be specified with the "--compare" flag. For
-    example::
-
-        ./manage.py collectnewstatic --compare file_hash
-
-    The command will attempt to call the method with the name of the comparison
-    type on the source and destination storage objects and compare the results.
-    In the case of "file_hash", if a "file_hash" method is not present on the
-    storage object, the file will be opened and the hash calculated. Therefore,
-    you may be able to speed up the collection process by implementing these
-    methods on your storage class.
-
-    The ``modified_time()`` method must return a local datetime; ``file_hash()``
-    must return an md5 hexdigest.
-
-    """
-
-    option_list = CollectStatic.option_list + (
-        make_option('--compare', default='modified_time',
-            dest='comparison_method',
-            help='The comparison method to use in order to determine which file'
-                ' is newer. Options are modified_time and file_hash. Note that,'
-                ' with file_hash, the file will be opened if the storage does'
-                ' not define a file_hash method, so you should define a'
-                ' file_hash method for remote storage backends (or avoid the'
-                ' file_hash comparison method).'),
-    )
+class CollectNewMixin(object):
+    def __init__(self, *args, **kwargs):
+        self.option_list = list(self.option_list) + [
+            make_option('--compare',
+                dest='comparison_method',
+                help='The comparison method to use in order to determine which file'
+                    ' is newer. Options are modified_time and file_hash. Note that,'
+                    ' with file_hash, the file will be opened if the storage does'
+                    ' not define a file_hash method, so you should define a'
+                    ' file_hash method for remote storage backends (or avoid the'
+                    ' file_hash comparison method). The modified_time method must'
+                    ' return a local datetime; file_hash must return an md5'
+                    ' hexdigest.')
+        ]
+        super(CollectNewMixin, self).__init__(*args, **kwargs)
 
     def link_file(self, path, prefixed_path, source_storage):
         self._if_modified(path, prefixed_path, source_storage,
-                          super(Command, self).link_file)
+                          super(CollectNewMixin, self).link_file)
 
     def copy_file(self, path, prefixed_path, source_storage):
         self._if_modified(path, prefixed_path, source_storage,
-                          super(Command, self).copy_file)
+                          super(CollectNewMixin, self).copy_file)
 
     def _if_modified(self, path, prefixed_path, source_storage, handler):
-        if self.storage.exists(path):
+        if self.comparison_method and self.storage.exists(path):
             if not self.compare(path, prefixed_path, source_storage):
                 self.log(u'Skipping %s' % path)
                 return
@@ -60,7 +42,7 @@ class Command(CollectStatic):
         return comparitor(path, prefixed_path, source_storage)
 
     def set_options(self, **options):
-        super(Command, self).set_options(**options)
+        super(CollectNewMixin, self).set_options(**options)
         self.comparison_method = options.get('comparison_method')
 
     def compare_modified_time(self, path, prefixed_path, source_storage):
@@ -84,3 +66,13 @@ class Command(CollectStatic):
             file = storage.open(name)
             contents = file.read()
             return md5(contents).hexdigest()
+
+
+class Command(CollectNewMixin, CollectStatic):
+    """
+    A version of Django's ``collectstatic`` with some useful extra options. For
+    example, you can choose to only collect new files (which is great for
+    collecting to a CDN).
+
+    """
+    pass
