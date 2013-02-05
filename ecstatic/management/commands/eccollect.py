@@ -14,13 +14,14 @@ class CollectNewMixin(object):
         self.option_list = list(self.option_list) + [
             make_option('--compare', default='modified_time',
                 dest='comparison_method',
-                help='The comparison method to use in order to determine which file'
-                    ' is newer. Options are modified_time/mtime and file_hash/md5. Note that,'
-                    ' with file_hash, the file will be opened if the storage does'
-                    ' not define a file_hash method, so you should define a'
-                    ' file_hash method for remote storage backends (or avoid the'
-                    ' file_hash comparison method). The modified_time method must'
-                    ' return a local datetime; file_hash must return an md5'
+                help='The comparison method to use in order to determine which'
+                    ' file is newer. Options are modified_time/mtime and'
+                    ' file_hash/md5. Note that, with file_hash, the file will'
+                    ' be opened if the storage does not define a file_hash'
+                    ' method, so you should define a file_hash method for'
+                    ' remote storage backends (or avoid the file_hash'
+                    ' comparison method). The modified_time method must return'
+                    ' a local datetime; file_hash must return an md5'
                     ' hexdigest.')
         ]
         super(CollectNewMixin, self).__init__(*args, **kwargs)
