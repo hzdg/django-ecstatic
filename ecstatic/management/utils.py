@@ -3,18 +3,18 @@ from django.core.files.storage import get_storage_class
 from optparse import make_option
 
 
-class StaticStorageMixin(object):
+class StorageOverrideMixin(object):
     def __init__(self, *args, **kwargs):
         self.option_list = self.option_list + (
             make_option('-s', '--storage', action='store',
                 dest='storage_override', type="string",
                 help='override default storage backend'),
         )
-        super(StaticStorageMixin, self).__init__(*args, **kwargs)
+        super(StorageOverrideMixin, self).__init__(*args, **kwargs)
 
     def set_options(self, **options):
         try:
-            super_set_options = super(StaticStorageMixin, self).set_options
+            super_set_options = super(StorageOverrideMixin, self).set_options
         except AttributeError:
             pass
         else:

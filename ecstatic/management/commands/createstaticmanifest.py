@@ -3,11 +3,11 @@ from django.contrib.staticfiles import finders
 from django.core.management.base import NoArgsCommand
 from django.utils.datastructures import SortedDict
 import os
-from ..utils import StaticStorageMixin
+from ..utils import StorageOverrideMixin
 from ...manifests import ConfiguredStaticFilesManifest
 
 
-class Command(StaticStorageMixin, NoArgsCommand):
+class Command(StorageOverrideMixin, NoArgsCommand):
     """
     Creates a staticfiles manifest. The exact format of the manifest is defined
     by ``ECSTATIC_MANIFEST``. By default, it's a JSON file.

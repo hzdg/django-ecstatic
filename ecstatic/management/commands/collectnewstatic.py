@@ -1,10 +1,10 @@
 from django.contrib.staticfiles.management.commands.collectstatic import Command as CollectStatic
 from hashlib import md5
 from optparse import make_option
-from ..utils import StaticStorageMixin
+from ..utils import StorageOverrideMixin
 
 
-class Command(StaticStorageMixin, CollectStatic):
+class Command(StorageOverrideMixin, CollectStatic):
     """
     A version of Django's ``collectstatic`` that only collects files that have
     changed. This can be useful for collecting files to a CDN, for example.
