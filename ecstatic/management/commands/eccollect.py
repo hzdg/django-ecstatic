@@ -4,12 +4,18 @@ from optparse import make_option
 
 
 class CollectNewMixin(object):
+
+    comparison_method_aliases = {
+        'md5': 'file_hash',
+        'mtime': 'modified_time',
+    }
+
     def __init__(self, *args, **kwargs):
         self.option_list = list(self.option_list) + [
             make_option('--compare', default='modified_time',
                 dest='comparison_method',
                 help='The comparison method to use in order to determine which file'
-                    ' is newer. Options are modified_time and file_hash. Note that,'
+                    ' is newer. Options are modified_time/mtime and file_hash/md5. Note that,'
                     ' with file_hash, the file will be opened if the storage does'
                     ' not define a file_hash method, so you should define a'
                     ' file_hash method for remote storage backends (or avoid the'
@@ -21,7 +27,8 @@ class CollectNewMixin(object):
 
     def set_options(self, **options):
         super(CollectNewMixin, self).set_options(**options)
-        self.comparison_method = options.get('comparison_method')
+        comparison_method = options.get('comparison_method')
+        self.comparison_method = self.comparison_method_aliases.get(comparison_method, comparison_method)
 
     def delete_file(self, path, prefixed_path, source_storage):
         if self.comparison_method == 'modified_time':
