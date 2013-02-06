@@ -64,8 +64,9 @@ class LaxPostProcessorMixin(object):
                                         self).post_process(paths, dry_run, **options):
                         yield result
             error_count = self._post_process_error_count
-            print '\n%s post-processing error%s.' % (error_count,
-                    '' if error_count == 1 else 's')
+            if error_count:
+                print '%s post-processing error%s.' % (error_count,
+                        '' if error_count == 1 else 's')
 
 
 class CachedFilesMixin(LaxPostProcessorMixin, _CachedFilesMixin):
