@@ -1,4 +1,10 @@
+import os
+import sys
+
 from django.contrib.staticfiles.management.commands.collectstatic import Command as CollectStatic
+from django.core.management.base import CommandError
+from django.contrib.staticfiles import finders
+from django.utils.datastructures import SortedDict
 from hashlib import md5
 from optparse import make_option
 from ..utils import StorageOverrideMixin
@@ -23,14 +29,74 @@ class CollectNewMixin(object):
                     ' remote storage backends (or avoid the file_hash'
                     ' comparison method). The modified_time method must return'
                     ' a local datetime; file_hash must return an md5'
-                    ' hexdigest.')
+                    ' hexdigest.'),
+            make_option('--immediate', default=False,
+                action='store_true', dest='Immediate_post_process',
+                help='The default behavior of collectstatic is to collect'
+                    ' the files first then batch post-process them.'
+                    ' The Immediate flag will post-process each individual'
+                    ' file after it\'s collected')
         ]
         super(CollectNewMixin, self).__init__(*args, **kwargs)
+
+    def collect(self):
+        """
+        Perform the bulk of the work of collectstatic.
+
+        Split off from handle_noargs() to facilitate testing.
+        """
+        if self.symlink:
+            if sys.platform == 'win32':
+                raise CommandError("Symlinking is not supported by this "
+                                   "platform (%s)." % sys.platform)
+            if not self.local:
+                raise CommandError("Can't symlink to a remote destination.")
+
+        if self.clear:
+            self.clear_dir('')
+
+        handler = self._get_handler()
+
+        do_post_process = self.post_process and hasattr(self.storage, 'post_process')
+
+        found_files = SortedDict()
+        for finder in finders.get_finders():
+            for path, storage in finder.list(self.ignore_patterns):
+                # Prefix the relative path if the source storage contains it
+                if getattr(storage, 'prefix', None):
+                    prefixed_path = os.path.join(storage.prefix, path)
+                else:
+                    prefixed_path = path
+
+                if prefixed_path not in found_files:
+                    found_files[prefixed_path] = (storage, path)
+                    handler(path, prefixed_path, storage)
+                    if self.Immediate_post_process and do_post_process:
+                        try:
+                            self.post_processor(
+                                    SortedDict({prefixed_path: (storage, path)}),
+                                    self.dry_run)
+                        except ValueError, e:
+                            message = ('%s current storage requires all files'
+                                ' to have been collected first. Try '
+                                ' ecstatic.storage.CachedStaticFilesStorage' \
+                                % e)
+                            raise ValueError(message)
+
+        if not self.Immediate_post_process and do_post_process:
+            self.post_processor(found_files, self.dry_run)
+
+        return {
+            'modified': self.copied_files + self.symlinked_files,
+            'unmodified': self.unmodified_files,
+            'post_processed': self.post_processed_files,
+        }
 
     def set_options(self, **options):
         super(CollectNewMixin, self).set_options(**options)
         comparison_method = options.get('comparison_method')
         self.comparison_method = self.comparison_method_aliases.get(comparison_method, comparison_method)
+        self.Immediate_post_process = options.get('Immediate_post_process')
 
     def delete_file(self, path, prefixed_path, source_storage):
         if self.comparison_method == 'modified_time':
@@ -84,6 +150,19 @@ class CollectNewMixin(object):
             file = storage.open(name)
             contents = file.read()
             return md5(contents).hexdigest()
+
+    def post_processor(self, found_files, dry_run):
+        processor = self.storage.post_process(found_files, dry_run=dry_run)
+        for original_path, processed_path, processed in processor:
+            if processed:
+                self.log(u"Post-processed '%s' as '%s" %
+                         (original_path, processed_path), level=1)
+                self.post_processed_files.append(original_path)
+            else:
+                self.log(u"Skipped post-processing '%s'" % original_path)
+
+    def _get_handler(self):
+        return self.link_file if self.symlink else self.copy_file
 
 
 class Command(StorageOverrideMixin, CollectNewMixin, CollectStatic):
