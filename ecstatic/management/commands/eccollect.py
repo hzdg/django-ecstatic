@@ -74,7 +74,7 @@ class CollectNewMixin(object):
                     if self.progressive_post_process and do_post_process:
                         try:
                             self._post_process(
-                                    SortedDict({prefixed_path: (storage, path)}),
+                                    {prefixed_path: (storage, path)},
                                     self.dry_run)
                         except ValueError, e:
                             message = ('%s current storage requires all files'
