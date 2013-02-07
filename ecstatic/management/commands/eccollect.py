@@ -73,7 +73,7 @@ class CollectNewMixin(object):
                     handler(path, prefixed_path, storage)
                     if self.progressive_post_process and do_post_process:
                         try:
-                            self.post_processor(
+                            self._post_process(
                                     SortedDict({prefixed_path: (storage, path)}),
                                     self.dry_run)
                         except ValueError, e:
@@ -84,7 +84,7 @@ class CollectNewMixin(object):
                             raise ValueError(message)
 
         if not self.progressive_post_process and do_post_process:
-            self.post_processor(found_files, self.dry_run)
+            self._post_process(found_files, self.dry_run)
 
         return {
             'modified': self.copied_files + self.symlinked_files,
@@ -151,7 +151,7 @@ class CollectNewMixin(object):
             contents = file.read()
             return md5(contents).hexdigest()
 
-    def post_processor(self, found_files, dry_run):
+    def _post_process(self, found_files, dry_run):
         processor = self.storage.post_process(found_files, dry_run=dry_run)
         for original_path, processed_path, processed in processor:
             if processed:
