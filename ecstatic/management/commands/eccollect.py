@@ -30,11 +30,11 @@ class CollectNewMixin(object):
                     ' comparison method). The modified_time method must return'
                     ' a local datetime; file_hash must return an md5'
                     ' hexdigest.'),
-            make_option('--immediate', default=False,
-                action='store_true', dest='Immediate_post_process',
+            make_option('--progressive', default=False,
+                action='store_true', dest='progressive_post_process',
                 help='The default behavior of collectstatic is to collect'
                     ' the files first then batch post-process them.'
-                    ' The Immediate flag will post-process each individual'
+                    ' The progressive flag will post-process each individual'
                     ' file after it\'s collected')
         ]
         super(CollectNewMixin, self).__init__(*args, **kwargs)
@@ -71,7 +71,7 @@ class CollectNewMixin(object):
                 if prefixed_path not in found_files:
                     found_files[prefixed_path] = (storage, path)
                     handler(path, prefixed_path, storage)
-                    if self.Immediate_post_process and do_post_process:
+                    if self.progressive_post_process and do_post_process:
                         try:
                             self.post_processor(
                                     SortedDict({prefixed_path: (storage, path)}),
@@ -83,7 +83,7 @@ class CollectNewMixin(object):
                                 % e)
                             raise ValueError(message)
 
-        if not self.Immediate_post_process and do_post_process:
+        if not self.progressive_post_process and do_post_process:
             self.post_processor(found_files, self.dry_run)
 
         return {
@@ -96,7 +96,7 @@ class CollectNewMixin(object):
         super(CollectNewMixin, self).set_options(**options)
         comparison_method = options.get('comparison_method')
         self.comparison_method = self.comparison_method_aliases.get(comparison_method, comparison_method)
-        self.Immediate_post_process = options.get('Immediate_post_process')
+        self.progressive_post_process = options.get('progressive_post_process')
 
     def delete_file(self, path, prefixed_path, source_storage):
         if self.comparison_method == 'modified_time':
