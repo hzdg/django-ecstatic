@@ -30,12 +30,13 @@ class CollectNewMixin(object):
                     ' comparison method). The modified_time method must return'
                     ' a local datetime; file_hash must return an md5'
                     ' hexdigest.'),
-            make_option('--progressive', default=False,
-                action='store_true', dest='progressive_post_process',
+            make_option('--pp', default='default',
+                action="store", dest='pp', type="string",
                 help='The default behavior of collectstatic is to collect'
                     ' the files first then batch post-process them.'
-                    ' The progressive flag will post-process each individual'
-                    ' file after it\'s collected')
+                    ' Ommiting the --pp option or passing it default produces'
+                    ' this default behavior. Passing in progressive will'
+                    ' post-process each individual file after it\'s collected')
         ]
         super(CollectNewMixin, self).__init__(*args, **kwargs)
 
@@ -96,7 +97,13 @@ class CollectNewMixin(object):
         super(CollectNewMixin, self).set_options(**options)
         comparison_method = options.get('comparison_method')
         self.comparison_method = self.comparison_method_aliases.get(comparison_method, comparison_method)
-        self.progressive_post_process = options.get('progressive_post_process')
+        pp = options.get('pp')
+        if pp == 'default':
+            self.progressive_post_process = False
+        elif pp == 'progressive':
+            self.progressive_post_process = True
+        else:
+            raise CommandError("--pp must be 'default' or 'progressive'.")
 
     def delete_file(self, path, prefixed_path, source_storage):
         if self.comparison_method == 'modified_time':
