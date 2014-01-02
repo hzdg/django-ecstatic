@@ -20,7 +20,7 @@ def patched_name_fn(storage, fn_name, desc):
     def patched(self, name, *args, **kwargs):
         try:
             return original_fn(name, *args, **kwargs)
-        except Exception, exc:
+        except Exception as exc:
             if self.strict:
                 raise
 
