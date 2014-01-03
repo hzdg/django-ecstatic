@@ -77,7 +77,7 @@ def get_manifest_class(import_path=None):
     module, classname = import_path[:dot], import_path[dot + 1:]
     try:
         mod = import_module(module)
-    except ImportError, e:
+    except ImportError as e:
         raise ImproperlyConfigured('Error importing manifest module %s: "%s"' % (module, e))
     try:
         return getattr(mod, classname)

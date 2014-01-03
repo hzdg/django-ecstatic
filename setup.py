@@ -6,10 +6,12 @@ from setuptools import setup, find_packages
 
 read = lambda filepath: codecs.open(filepath, 'r', 'utf-8').read()
 
+def exec_file(filepath, globalz=None, localz=None):
+    exec(read(filepath), globalz, localz)
 
 # Load package meta from the pkgmeta module without loading the package.
 pkgmeta = {}
-execfile(os.path.join(os.path.dirname(__file__), 'ecstatic', 'pkgmeta.py'),
+exec_file(os.path.join(os.path.dirname(__file__), 'ecstatic', 'pkgmeta.py'),
          pkgmeta)
 
 
@@ -41,6 +43,8 @@ setup(
         'Programming Language :: Python :: 2.5',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
         'Topic :: Utilities'
     ],
 )

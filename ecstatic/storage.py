@@ -20,15 +20,15 @@ def patched_name_fn(storage, fn_name, desc):
     def patched(self, name, *args, **kwargs):
         try:
             return original_fn(name, *args, **kwargs)
-        except Exception, exc:
+        except Exception as exc:
             if self.strict:
                 raise
 
             # TODO: Real warning?
-            print ('WARNING: Could not get %s for "%s". Using "%s" instead.'
-                   ' To change this behavior, set your storage\'s `strict`'
-                   ' attribute to `False`. Error was: %s'
-                   % (desc, name, name, exc))
+            print('WARNING: Could not get %s for "%s". Using "%s" instead.'
+                  ' To change this behavior, set your storage\'s `strict`'
+                  ' attribute to `False`. Error was: %s'
+                  % (desc, name, name, exc))
             # Increment error count.
             setattr(self, '_post_process_error_count',
                     getattr(self, '_post_process_error_count', 0))
@@ -65,8 +65,8 @@ class LaxPostProcessorMixin(object):
                         yield result
             error_count = self._post_process_error_count
             if error_count:
-                print '%s post-processing error%s.' % (error_count,
-                        '' if error_count == 1 else 's')
+                print('%s post-processing error%s.' % (error_count,
+                        '' if error_count == 1 else 's'))
 
 
 class CachedFilesMixin(LaxPostProcessorMixin, _CachedFilesMixin):

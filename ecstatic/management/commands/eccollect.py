@@ -77,7 +77,7 @@ class CollectNewMixin(object):
                             self._post_process(
                                     {prefixed_path: (storage, path)},
                                     self.dry_run)
-                        except ValueError, e:
+                        except ValueError as e:
                             message = ('%s current storage requires all files'
                                 ' to have been collected first. Try '
                                 ' ecstatic.storage.CachedStaticFilesStorage' \
