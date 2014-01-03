@@ -16,8 +16,8 @@ class Command(BaseCommand):
                     (ImageField, FileField)]
 
             if field_names:
-                print 'Hashing filenames for %s.%s...' % (model._meta.app_label,
-                                          model._meta.object_name)
+                print('Hashing filenames for %s.%s...' % (model._meta.app_label,
+                                          model._meta.object_name))
 
                 for m in model.objects.all():
                     updated = False
@@ -37,7 +37,7 @@ class Command(BaseCommand):
         if file:
             new_name = get_hashed_filename(file.name, file)
             if new_name != file.name:
-                print '    Renaming "%s" to "%s"' % (file.name, new_name)
+                print('    Renaming "%s" to "%s"' % (file.name, new_name))
                 file.save(os.path.basename(new_name), file, save=False)
                 return True
 
