@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.core.cache import get_cache
 from django.core.exceptions import ImproperlyConfigured
-from django.utils import simplejson as json
 from django.utils.functional import LazyObject
 from django.utils.importlib import import_module
 import os
+import json
 
 
 class NotInManifest(Exception):
