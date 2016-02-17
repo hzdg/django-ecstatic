@@ -1,5 +1,9 @@
+import django
 from django.conf import settings
-from django.core.cache import get_cache
+if django.VERSION < (1, 7):
+    from django.core.cache import get_cache
+else:
+    from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import LazyObject
 from django.utils.importlib import import_module
@@ -46,7 +50,10 @@ class JsonManifest(object):
     def get(self, key):
         manifest_mtime = os.path.getmtime(settings.ECSTATIC_MANIFEST_FILE)
         cache_key = self._get_cache_key(key, manifest_mtime)
-        cache = get_cache(settings.ECSTATIC_MANIFEST_CACHE)
+        if django.VERSION < (1, 7):
+            cache = get_cache(settings.ECSTATIC_MANIFEST_CACHE)
+        else:
+            cache = caches[settings.ECSTATIC_MANIFEST_CACHE]
         value = cache.get(cache_key)
         if value is None:
             # Populate the cache with the entire contents of the manifest.
