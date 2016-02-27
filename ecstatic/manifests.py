@@ -6,7 +6,7 @@ else:
     from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import LazyObject
-from django.utils.importlib import import_module
+from importlib import import_module
 import os
 import json
 
